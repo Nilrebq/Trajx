@@ -27,14 +27,12 @@ async def is_subscribed(filter, client, update):
 async def encode(string):
     string_bytes = string.encode("ascii")
     base64_bytes = base64.b64encode(string_bytes)
-    base64_string = base64_bytes.decode("ascii")
-    return base64_string
+    return base64_bytes.decode("ascii")
 
 async def decode(base64_string):
     base64_bytes = base64_string.encode("ascii")
-    string_bytes = base64.b64decode(base64_bytes) 
-    string = string_bytes.decode("ascii")
-    return string
+    string_bytes = base64.b64decode(base64_bytes)
+    return string_bytes.decode("ascii")
 
 async def get_messages(client, message_ids):
     messages = []
@@ -60,26 +58,21 @@ async def get_messages(client, message_ids):
 
 async def get_message_id(client, message):
     if message.forward_from_chat:
-        if message.forward_from_chat.id == client.db_channel.id:
-            return message.forward_from_message_id
-        else:
-            return 0
-    elif message.forward_sender_name:
+        return message.forward_from_message_id if message.forward_from_chat.id == client.db_channel.id else 0
+
+    elif message.forward_sender_name or not message.text:
         return 0
-    elif message.text:
+    else:
         pattern = "https://t.me/(?:c/)?(.*)/(\d+)"
         matches = re.match(pattern,message.text)
         if not matches:
             return 0
-        channel_id = matches.group(1)
-        msg_id = int(matches.group(2))
+        channel_id = matches[1]
+        msg_id = int(matches[2])
         if channel_id.isdigit():
             if f"-100{channel_id}" == str(client.db_channel.id):
                 return msg_id
-        else:
-            if channel_id == client.db_channel.username:
-                return msg_id
-    else:
-        return 0
+        elif channel_id == client.db_channel.username:
+            return msg_id
 
 subscribed = filters.create(is_subscribed)

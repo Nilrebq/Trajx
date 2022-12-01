@@ -1,3 +1,4 @@
+import contextlib
 from PIL import Image, ImageEnhance, ImageFilter
 import shutil
 import cv2
@@ -211,7 +212,6 @@ async def box_blur(client, message):
         if not os.path.isdir(f"./DOWNLOADS/{userid}"):
             os.makedirs(f"./DOWNLOADS/{userid}")
         download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "box_blur.jpg"
         if not message.reply_to_message.empty:
             msg = await message.reply_to_message.reply_text(
                 "<b>𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙸𝙽𝙶 𝙸𝙼𝙰𝙶𝙴....</b>", quote=True
@@ -222,24 +222,22 @@ async def box_blur(client, message):
             await msg.edit("<b>𝚄𝙿𝙻𝙾𝙰𝙳𝙸𝙽𝙶 𝙸𝙼𝙰𝙶𝙴....</b>")
             im1 = Image.open(a)
             im2 = im1.filter(ImageFilter.BoxBlur(0))
+            edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "box_blur.jpg"
             im2.save(edit_img_loc)
             await message.reply_chat_action("upload_photo")
             await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
             await msg.delete()
         else:
             await message.reply_text("Why did you delete that??")
-        try:
+        with contextlib.suppress(Exception):
             shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
     except Exception as e:
-        print("box_blur-error - " + str(e))
+        print(f"box_blur-error - {str(e)}")
         if "USER_IS_BLOCKED" in str(e):
             return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+        try:
+            await message.reply_to_message.reply_text(
+                "Something went wrong!", quote=True
+            )
+        except Exception:
+            return

@@ -94,13 +94,13 @@ async def disable_chat(bot, message):
         chat_ = int(chat)
     except:
         return await message.reply('Give Me A Valid Chat ID')
-    cha_t = await db.get_chat(int(chat_))
+    cha_t = await db.get_chat(chat_)
     if not cha_t:
         return await message.reply("Chat Not Found In DB")
     if cha_t['is_disabled']:
         return await message.reply(f"This chat is already disabled:\nReason-<code> {cha_t['reason']} </code>")
-    await db.disable_chat(int(chat_), reason)
-    temp.BANNED_CHATS.append(int(chat_))
+    await db.disable_chat(chat_, reason)
+    temp.BANNED_CHATS.append(chat_)
     await message.reply('Chat Succesfully Disabled')
     try:
         buttons = [[
@@ -130,8 +130,8 @@ async def re_enable_chat(bot, message):
         return await message.reply("Chat Not Found In DB !")
     if not sts.get('is_disabled'):
         return await message.reply('This chat is not yet disabled.')
-    await db.re_enable_chat(int(chat_))
-    temp.BANNED_CHATS.remove(int(chat_))
+    await db.re_enable_chat(chat_)
+    temp.BANNED_CHATS.remove(chat_)
     await message.reply("Chat Succesfully re-enabled")
 
 
@@ -221,7 +221,7 @@ async def unban_a_user(bot, message):
     except PeerIdInvalid:
         return await message.reply("This is an invalid user, make sure ia have met him before.")
     except IndexError:
-        return await message.reply("Thismight be a channel, make sure its a user.")
+        return await message.reply("This might be a channel, make sure its a user.")
     except Exception as e:
         return await message.reply(f'Error - {e}')
     else:

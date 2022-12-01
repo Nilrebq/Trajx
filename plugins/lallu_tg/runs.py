@@ -5,9 +5,9 @@ from plugins.helper_functions.cust_p_filters import f_onw_fliter
 
 
 RUN_STRINGS = (
-    "ഓ.. ധിക്കാരം... പഴേപോലെ തന്നെ....ഒരു മാറ്റോമില്ല.....ചുമ്മാതല്ല ഗതി പിടിക്കാത്തത്....!!!",
-    "അള്ളാ... പിള്ളേരുടെ ഓരോ... പെഷനെ...",
-    "എനിക്ക് എഴുതാൻ അല്ലെ അറിയൂ സാറേ.... വായിക്കാൻ അറിയില്ലല്ലോ....",
+    "Oh.. insolence... same as before....there is no change.....it's not the spit that doesn't hold the course....!!!",
+    "Allah... each of the children's... passion...",
+    "Sir, I don't know how to write... I don't know how to read...",
     "ഇന്ന് ഇനി നീ മിണ്ടരുത്... ഇന്നത്തെ കോട്ട കഴിഞ്ഞ്.....",
     "ചാരമാണെന്ന് കരുതി ചെകയാൻ നിൽക്കണ്ട കനൽ കെട്ടിട്ടില്ലെങ്കിൽ പൊള്ളും.",
     "ഒറ്റ ജീവിതമേ ഉള്ളു മനസിലാക്കിക്കോ, സ്വർഗ്ഗമില്ല നരകമില്ല, 'ഒറ്റ ജീവിതം', അത് എവിടെ എങ്ങനെ വേണമെന്ന് അവനവൻ തീരുമാനിക്കും",
