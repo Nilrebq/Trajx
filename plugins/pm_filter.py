@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 import re
 import ast
 
@@ -7,7 +8,7 @@ from Script import script
 import pyrogram
 from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, \
     make_inactive
-from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CHANNEL_USERNAME, CUSTOM_FILE_CAPTION, AUTH_GROUPS, P_TTI_SHOW_OFF, IMDB, \
+from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, AUTO_DELETE_TIME, CHANNEL_USERNAME, CUSTOM_FILE_CAPTION, AUTH_GROUPS, P_TTI_SHOW_OFF, IMDB, \
     SINGLE_BUTTON, SPELL_CHECK_REPLY, IMDB_TEMPLATE
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters
@@ -217,13 +218,19 @@ async def next_page(bot, query):
                 InlineKeyboardButton("𝗡𝗲𝘅𝘁 ➡️", callback_data=f"next_{req}_{key}_{n_offset}")
             ],
         )
-    try:
-        await query.edit_message_reply_markup(
+    with contextlib.suppress(MessageNotModified):
+        delete_msg = await query.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(btn)
         )
-    except MessageNotModified:
-        pass
     await query.answer()
+
+    if AUTO_DELETE_TIME:
+        await asyncio.sleep(AUTO_DELETE_TIME)
+        try:
+            await delete_msg.delete()
+            await delete_msg.reply_to_message.delete()
+        except Exception as e:
+            logging.error(e)
 
 
 @Client.on_callback_query(filters.regex(r"^spolling"))
@@ -1399,7 +1406,7 @@ async def auto_filter(client, msg, spoll=False):
         cap = f"Here is what i found for your query {search}"
     if imdb and imdb.get('poster'):
         try:
-            await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024],
+            fmsg = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024],
                                       reply_markup=InlineKeyboardMarkup(btn))
         except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
             pic = imdb.get('poster')
@@ -1407,11 +1414,20 @@ async def auto_filter(client, msg, spoll=False):
             fmsg = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
         except Exception as e:
             logger.exception(e)
-            await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
+            fmsg = await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
     else:
-        await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
+        fmsg = await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
     if spoll:
         await msg.message.delete()
+
+    if AUTO_DELETE_TIME:
+        await asyncio.sleep(AUTO_DELETE_TIME)
+        try:
+            await fmsg.delete()
+            await fmsg.reply_to_message.delete()
+        except Exception as e:
+            logging.error(e)
+
 
 async def advantage_spell_chok(msg):
     query = re.sub(
