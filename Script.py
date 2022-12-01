@@ -1,4 +1,4 @@
-from info import BOT_USERNAME, CHANNEL_USERNAME
+from info import BOT_USERNAME, CHANNEL_USERNAME, YOUTUBE_LINK
 
 
 class script(object):

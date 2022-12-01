@@ -28,7 +28,7 @@ class evamaria(Client):
             ":memory:",
             plugins=dict(root=f"{name}/plugins"),
             workdir=TMP_DOWNLOAD_DIRECTORY,
-            api_id=APP_ID,
+            api_id=API_ID,
             api_hash=API_HASH,
             bot_token=BOT_TOKEN,
             parse_mode="html",
@@ -96,6 +96,7 @@ PUBLIC_FILE_STORE = is_enabled((environ.get('PUBLIC_FILE_STORE', "True")), True)
 BOT_USERNAME = environ.get("BOT_USERNAME")
 CHANNEL_USERNAME = environ.get("CHANNEL_USERNAME")
 AUTO_DELETE_TIME = int(environ.get("AUTO_DELETE_TIME", 0))
+YOUTUBE_LINK = environ.get("YOUTUBE_LINK", "https://www.youtube.com/watch?v=mG15bFsuNdo")
 
 LOG_STR = "Current Cusomized Configurations are:-\n" + (("IMDB Results are enabled, Bot will be showing imdb details for you queries.\n" if IMDB else "IMBD Results are disabled.\n"))
 LOG_STR += ("P_TTI_SHOW_OFF found , Users will be redirected to send /start to Bot PM instead of sending file file directly\n" if P_TTI_SHOW_OFF else "P_TTI_SHOW_OFF is disabled files will be send in PM, instead of sending start.\n")
