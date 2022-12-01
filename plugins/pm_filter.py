@@ -9,7 +9,7 @@ import pyrogram
 from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, \
     make_inactive
 from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, AUTO_DELETE_TIME, CHANNEL_USERNAME, CUSTOM_FILE_CAPTION, AUTH_GROUPS, P_TTI_SHOW_OFF, IMDB, \
-    SINGLE_BUTTON, SPELL_CHECK_REPLY, IMDB_TEMPLATE
+    SINGLE_BUTTON, SPELL_CHECK_REPLY, IMDB_TEMPLATE, TUTORIAL_LINK
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
@@ -193,6 +193,9 @@ async def next_page(bot, query):
             ]
             for file in files
         ]
+        
+    if TUTORIAL_LINK:
+        btn.append([InlineKeyboardButton("HOW TO DOWNLOAD 🤔", url=TUTORIAL_LINK)])
 
     if 0 < offset <= 10:
         off_set = 0
@@ -1353,6 +1356,9 @@ async def auto_filter(client, msg, spoll=False):
             ]
             for file in files
         ]
+
+    if TUTORIAL_LINK:
+        btn.append([InlineKeyboardButton("HOW TO DOWNLOAD 🤔", url=TUTORIAL_LINK)])
 
     if offset != "":
         key = f"{message.chat.id}-{message.message_id}"
